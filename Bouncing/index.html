@@ -1,0 +1,129 @@
+<style>
+#canvas{
+    height:800px;
+    width:900px;
+    /* margin:0 auto; */
+    background: #eee;
+    position: relative
+}
+
+.grid-item{
+    height:200px;
+    width:300px;
+    margin:0 auto;
+    background: #eee;
+    position: relative
+}
+
+.balls{
+ border-radius: 5vw;
+ /* min-height: 20px;
+ min-width: 20px; */
+ position: absolute;
+ box-shadow: 1px 1px 5px rgb(0, 0, 0);
+}
+
+.grid-container{
+    background:gray;
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    height:100%; 
+    width:100%;
+    border:1px solid red;
+    gap:0
+}
+
+
+</style>
+
+
+<html>
+
+    <body class="grid-container">
+        <section id="canvas" class="grid-item"></section>
+        <!-- <section id="canvas2" class="grid-item">a</section>
+        <section id="canvas3" class="grid-item">b</section>
+        <section id="canvas4" class="grid-item">c</section>
+        <section id="canvas2" class="grid-item">a</section>
+        <section id="canvas3" class="grid-item">b</section>
+        <section id="canvas4" class="grid-item">c</section>
+        <section id="canvas2" class="grid-item">a</section>
+        <section id="canvas3" class="grid-item">b</section>
+        <section id="canvas4" class="grid-item">c</section> -->
+    </body>
+
+</html>
+
+
+
+
+
+<script>
+    let attr = new Array();
+    let speed = 1;
+    let canvasY = 800;
+    let canvasX = 900;
+    let moveUp=-2; moveDown = 2; moveLeft =-2; moveRight = 2;
+    repeatEveryCycle();
+    function repeatEveryCycle(){
+            AssembleObjects();
+            repeatEverySecond();
+
+    }
+
+
+    function repeatEverySecond() {
+    intervalID = setInterval(execute, speed);
+    }
+
+    function execute(num) {
+        //move
+        moveBalls();
+    }
+
+    function moveBalls(){
+        // console.log('The ball must move here per second');
+        let balls = document.getElementsByClassName("balls");
+        for(let x=0; x<balls.length; x++){
+            
+            //change directions once bounce
+            if(parseInt(balls[x].style.top) <= 0){
+                attr[x][1] = moveDown// for up and down movement changes
+            }else if(parseInt(balls[x].style.top) + parseInt(balls[x].style.minHeight) >= canvasY){
+                attr[x][1] = moveUp;
+            }
+            
+            if(parseInt(balls[x].style.left) <= 0){
+                attr[x][0] = moveRight// for up and down movement changes
+            }else if(parseInt(balls[x].style.left) + parseInt(balls[x].style.minWidth) >= canvasX){
+                attr[x][0] = moveLeft;
+            }
+
+            //keep moving until it bounce
+            balls[x].style.top = parseInt(balls[x].style.top ) + attr[x][1];
+            balls[x].style.left = parseInt(balls[x].style.left ) + attr[x][0];
+            // console.log("x:" + document.getElementsByClassName("balls")[x].style.left + ", y:" + document.getElementsByClassName("balls")[x].style.top);
+        }
+    }
+
+    function AssembleObjects(){
+        for(x=0; x<200; x++){
+            attr[x] = new Array(2);
+            for(let y=0; y<attr[x].length; y++){
+                attr[x][y]  = Math.round(Math.random() * 1)?1:-1; //objects attribute
+            }
+            createObjects();
+        }
+    }
+
+
+    function createObjects(){
+        let color = parseInt(Math.random() * 666) +333 //generate color
+        let initPosX =  parseInt(Math.random() * 750);
+        let initPosY =  parseInt(Math.random() * 750);
+        let size = 3 * Math.ceil(Math.random() * 15) + 5 ;
+        // console.log("x:" + initPosX + ", y:" + initPosY);
+        document.getElementById("canvas").innerHTML += "<div class='balls' style='background:#"+color+"; top:"+initPosY+";left:"+initPosX+"; min-height:"+size+"; min-width:"+size+"'></div>"
+    }
+
+</script>

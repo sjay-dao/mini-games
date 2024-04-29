@@ -1,0 +1,300 @@
+<!-- rock vs paper vs scissor -->
+<style>
+    #stadium {
+  position: relative;
+  width:1000px; height:800px; background:#0002;
+  margin:0 auto;
+  border: 3px solid #73AD21;
+
+  .objects{
+    position: absolute;
+    width: 10x;
+    height: 10px;
+    /* border: 3px solid #73AD21; */
+    font-size: 1vw;
+  }
+
+  .img{
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 50%;
+  }
+  /* .rock{
+    background:lightblue url("rock.png") no-repeat fixed center;
+  }
+  
+  .paper{
+    background: green;
+  }
+
+  .scissor{
+    background: blue;
+  } */
+} 
+
+#label{
+    display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        text-align: center;
+}
+</style>
+
+<html>
+    <div id="stadium">
+       
+    </div>
+    <div id="label">
+        <div id="announcer"></div>
+        <div id="rock-label"></div>
+        <div id="paper-label"></div>
+        <div id="scissor-label"></div>
+    </div>
+</html>
+
+
+
+<script>
+    let rock, paper, scissor;
+    let num_of_objects = 50;
+    let intervalID;
+    let rock_win = 0;
+    let paper_win =0;
+    let scissor_win =0;
+    let id_cnt = 2000;
+    let speed = 10;
+    
+    let addends_top = 2;
+    let addends_left =2;
+    repeatEveryWin();
+    function repeatEveryWin(){
+            id_cnt = 2000;
+            document.getElementById("rock-label").innerHTML = "Rock: "+ rock_win;
+            document.getElementById("paper-label").innerHTML = "Paper: "+ paper_win;
+            document.getElementById("scissor-label").innerHTML = "Scissor: " +scissor_win;
+            document.getElementById("stadium").innerHTML = "";
+            generateRPSProportionally(num_of_objects);
+            repeatEverySecond();
+
+    }
+
+
+    // setInterval(HuntTarget(rock,scissor), 100);
+
+
+
+        
+
+    function repeatEverySecond() {
+    intervalID = setInterval(execute, speed);
+    }
+
+    function execute(num) {
+        HuntTarget();
+        // HuntTarget(scissor,paper);
+        // HuntTarget(paper,rock);
+    }
+
+
+    function generateRPSProportionally(num){
+        generateRock(num);
+        // setTimeout(generatePaper(num), 5000);
+        // setTimeout(generateScissor(num), 5000);
+        generatePaper(num);
+        generateScissor(num);
+        // HuntTarget(rock,scissor);
+    }
+
+
+    function generateRock(num){
+        rock = new Array(num);
+        for(let x=0; x<num;x++){
+            document.getElementById("stadium").innerHTML +="<div id='R"+x+"' class='objects' ><img src='rock.png' class='img'></div>";    
+            rock[x] = document.getElementById("R"+x);;
+            setPositionInRandom(rock[x]);
+        }
+        // console.log(rock);
+    }
+
+    function generatePaper(num){
+        paper = new Array(num);
+        for(let x=0; x<num;x++){
+            document.getElementById("stadium").innerHTML +="<div id='P"+x+"' class='objects' ><img src='paper.png' class='img'></div>";
+            paper[x] = document.getElementById("P"+x);
+            setPositionInRandom(paper[x]);
+        }
+    }
+
+
+    function generateScissor(num){
+        scissor = new Array(num);
+        for(let x=0; x<num;x++){
+            document.getElementById("stadium").innerHTML +="<div id='S"+x+"' class='objects' ><img src='scissor.png' class='img'></div>";
+            scissor[x]= document.getElementById("S"+x);
+            setPositionInRandom(scissor[x]);
+            
+        }
+    }
+
+
+    function setPositionInRandom(elem){
+        let left = Math.random() * 1000;
+        let top = Math.random() * 800;
+        elem.style.left = left; 
+        elem.style.top = top;
+        // console.log( elem.style.left);
+    }
+
+
+    function HuntTarget(){
+        hunters = null;
+        targets = null;
+        let arbiter = Math.floor(Math.random() *3);
+        console.log(arbiter);
+        if(arbiter == 0){
+            hunters = rock;
+            targets = scissor;
+        } else if(arbiter == 1){
+            hunters = scissor;
+            targets = paper;
+        }else{
+            hunters = paper;
+            targets = rock;
+        }
+
+        for(let x=0; x<hunters.length; x++){
+            let lowest_hyp = 10000;
+            let target_obj = null;
+            let current_hunter_top = parseInt(hunters[x].style.top);
+            let current_hunter_left = parseInt(hunters[x].style.left);
+            let to_splice_index = -1;
+            // console.log(current_hunter_top);
+            //search for the nearest target
+            for(let y=0; y<targets.length; y++){
+                let current_target_left = parseInt(targets[y].style.left);
+                let current_target_top = parseInt(targets[y].style.top);
+                // console.log(current_hunter_left - current_target_left + " - pinagminus");
+                //compute hypotenuse
+                let aSquare = Math.pow(
+                                    Math.abs(
+                                        current_hunter_left - current_target_left)
+                                ,2);
+                                
+                // console.log(aSquare + " -  aSquare");  
+                let bSquare = Math.pow(
+                                    Math.abs(
+                                        current_hunter_top - current_target_top)
+                                ,2);
+                let hyp = Math.sqrt(aSquare+bSquare);
+                //  console.log(hyp + " - hyp of " + targets[y].getAttribute("id"));
+                if(lowest_hyp>hyp){
+                    lowest_hyp = hyp;
+                    target_obj = targets[y];
+                    to_splice_index = y;
+                }
+            }
+            //move the hunter to the nearest target
+            // console.log("Target of " + hunters[x].getAttribute("id") + " is " + target_obj.getAttribute("id"));
+            //if hunted
+            if(target_obj != null){
+                let height_of_obj = 15;
+                let width_of_obj = 15;
+                // console.log(target_obj + " - target_obj");
+                let target_id = target_obj.getAttribute("id");
+                let hunter_id = hunters[x].getAttribute("id");
+                let img_str = "";
+                let new_id = "";
+                if( Math.abs(current_hunter_top-parseInt(target_obj.style.top))<= height_of_obj && 
+                    Math.abs(current_hunter_left-parseInt(target_obj.style.left)) <= width_of_obj
+                ){
+                    // console.log("hunted by " + hunter_id + " is " + target_id);
+                    //remove from array
+                    if(target_id[0] == 'R'){
+                        rock.splice(to_splice_index,1);
+                        // console.log(rock);
+                    }
+                    else if(target_id[0] == 'S'){
+                        scissor.splice(to_splice_index,1);
+                        // console.log(scissor);
+                    }
+                    else if(target_id[0] == 'P'){
+                        paper.splice(to_splice_index,1);
+                        // console.log(paper);
+                    }
+
+                    //add to new Array
+                    if(hunter_id[0] == 'R'){
+                        id_cnt++;
+                        img_str = "rock";
+                        new_id = "RR"+id_cnt;
+                        // console.log(new_id + " - new id; " + target_id + " - target_id");
+                        document.getElementById(target_id).setAttribute("id", new_id);
+                        rock.push(document.getElementById(new_id));
+                        //  console.log(rock);
+                    }
+                    else if(hunter_id[0] == 'S'){
+                        id_cnt++;
+                        img_str = "scissor";
+                        new_id = "SS"+id_cnt;
+                        document.getElementById(target_id).setAttribute("id", new_id);
+                        scissor.push(document.getElementById(new_id));
+                        // console.log(scissor);
+                    }
+                    else if(hunter_id[0] == 'P'){
+                        id_cnt++;
+                        img_str = "paper";
+                        new_id = "PP"+id_cnt;
+                        document.getElementById(target_id).setAttribute("id", new_id);
+                        paper.push(document.getElementById(new_id));
+                        // console.log(paper);
+                    }
+                    //change the pic and the id
+                    document.getElementById(new_id).innerHTML = "<img src='"+img_str+".png' class='img' />";
+                    // document.getElementById(target_id).setAttribute("id", new_id);
+
+                }
+                    if(current_hunter_top-parseInt(target_obj.style.top)>=0)
+                        hunters[x].style.top= parseInt(hunters[x].style.top) - addends_top;
+                    else
+                        hunters[x].style.top= parseInt(hunters[x].style.top) + addends_top;
+
+                    if(current_hunter_left-parseInt(target_obj.style.left)>=0)
+                        hunters[x].style.left= parseInt(hunters[x].style.left) - addends_left;
+                    else
+                        hunters[x].style.left= parseInt(hunters[x].style.left) + addends_left;
+                // console.log(hunter_id);
+                resetPosition(hunter_id, hunters[x].style.top, hunters[x].style.left );
+
+            }else{
+                //check if someone wins
+                if(rock.length ==0 && paper.length ==0){
+                    scissor_win++;
+                    document.getElementById("announcer").innerHTML = "Scissors Win!";
+                    clearInterval(intervalID);
+                    repeatEveryWin();
+                }
+                else if(scissor.length ==0 && rock.length ==0){
+                    paper_win++;
+                    document.getElementById("announcer").innerHTML = "Papers Win!";
+                    clearInterval(intervalID);
+                    repeatEveryWin();
+                }
+                else if(paper.length ==0 && scissor.length == 0){
+                    rock_win++;
+                    document.getElementById("announcer").innerHTML = "Rocks Win!";
+                    clearInterval(intervalID);
+                    repeatEveryWin();
+                }
+                
+            }
+        }
+
+    }
+
+    function resetPosition(id, top, left){
+        document.getElementById(id).style.top = top;
+        
+        document.getElementById(id).style.left = left;
+    }
+</script>

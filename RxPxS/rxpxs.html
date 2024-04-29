@@ -1,0 +1,172 @@
+<!-- rock vs paper vs scissor -->
+<style>
+    #stadium {
+  position: relative;
+  width:900px; height:850px; background:#0002;
+  margin:0 auto;
+  border: 3px solid #73AD21;
+
+  .objects{
+    position: absolute;
+    width: 25x;
+    height: 25px;
+    /* border: 3px solid #73AD21; */
+    font-size: 1vw;
+  }
+
+  img{
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+  /* .rock{
+    background:lightblue url("rock.png") no-repeat fixed center;
+  }
+  
+  .paper{
+    background: green;
+  }
+
+  .scissor{
+    background: blue;
+  } */
+} 
+</style>
+
+<html>
+    <div id="stadium">
+
+    </div>
+</html>
+
+
+
+<script>
+    let rock, paper, scissor;
+    generateRPSProportionally(3);
+    // setInterval(HuntTarget(rock,scissor), 100);
+
+
+        let intervalID;
+
+        
+    repeatEverySecond();
+
+    function repeatEverySecond() {
+    intervalID = setInterval(execute, 100);
+    }
+
+    function execute(num) {
+        HuntTarget(rock,scissor);
+        HuntTarget(scissor,paper);
+        HuntTarget(paper,rock);
+    }
+
+
+    function generateRPSProportionally(num){
+        generateRock(num);
+        generatePaper(num);
+        generateScissor(num);
+
+        // HuntTarget(rock,scissor);
+    }
+
+
+    function generateRock(num){
+        rock = new Array(num);
+        for(let x=0; x<num;x++){
+            document.getElementById("stadium").innerHTML +="<div id='R"+x+"' class='objects' ><img src='rock.png'></div>";    
+            rock[x] = document.getElementById("R"+x);;
+            setPositionInRandom(rock[x]);
+        }
+        // console.log(rock);
+    }
+
+    function generatePaper(num){
+        paper = new Array(num);
+        for(let x=0; x<num;x++){
+            document.getElementById("stadium").innerHTML +="<div id='P"+x+"' class='objects' ><img src='paper.png'></div>";
+            paper[x] = document.getElementById("P"+x);
+            setPositionInRandom(paper[x]);
+        }
+    }
+
+
+    function generateScissor(num){
+        scissor = new Array(num);
+        for(let x=0; x<num;x++){
+            document.getElementById("stadium").innerHTML +="<div id='S"+x+"' class='objects' ><img src='scissor.png'></div>";
+            scissor[x]= document.getElementById("S"+x);
+            setPositionInRandom(scissor[x]);
+            
+        }
+    }
+
+
+    function setPositionInRandom(elem){
+        let left = Math.random() * 880;
+        let top = Math.random() * 820;
+        elem.style.left = left; 
+        elem.style.top = top;
+        // console.log( elem.style.left);
+    }
+
+
+    function HuntTarget(hunters, targets){
+        for(let x=0; x<hunters.length; x++){
+            let lowest_hyp = 1000;
+            let target_obj = null;
+            let current_hunter_top = parseInt(hunters[x].style.top);
+            let current_hunter_left = parseInt(hunters[x].style.left);
+            
+            // console.log(current_hunter_top);
+            //search for the nearest target
+            for(let y=0; y<targets.length; y++){
+                let current_target_left = parseInt(targets[y].style.left);
+                let current_target_top = parseInt(targets[y].style.top);
+                // console.log(current_hunter_left - current_target_left + " - pinagminus");
+                //compute hypotenuse
+                let aSquare = Math.pow(
+                                    Math.abs(
+                                        current_hunter_left - current_target_left)
+                                ,2);
+                                
+                // console.log(aSquare + " -  aSquare");  
+                let bSquare = Math.pow(
+                                    Math.abs(
+                                        current_hunter_top - current_target_top)
+                                ,2);
+                let hyp = Math.sqrt(aSquare+bSquare);
+                // console.log(hyp + " - hyp of " + targets[y].getAttribute("id"));
+                if(lowest_hyp>hyp){
+                    lowest_hyp = hyp;
+                    target_obj = targets[y];
+                }
+            }
+            //move the hunter to the nearest target
+            // console.log("Target of " + hunters[x].getAttribute("id") + " is " + target_obj.getAttribute("id"));
+            //if hunted
+           
+                if(current_hunter_top-parseInt(target_obj.style.top)>=0)
+                    hunters[x].style.top= parseInt(hunters[x].style.top) - 1;
+                else
+                    hunters[x].style.top= parseInt(hunters[x].style.top) + 1;
+
+                if(current_hunter_left-parseInt(target_obj.style.left)>=0)
+                    hunters[x].style.left= parseInt(hunters[x].style.left) - 1;
+                else
+                    hunters[x].style.left= parseInt(hunters[x].style.left) + 1;
+                    
+            let id = hunters[x].getAttribute("id");
+            resetPosition(id, hunters[x].style.top, hunters[x].style.left );
+
+        }
+
+    }
+
+    function resetPosition(id, top, left){
+        document.getElementById(id).style.top = top;
+        
+        document.getElementById(id).style.left = left;
+    }
+</script>

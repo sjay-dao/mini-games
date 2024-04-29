@@ -1,0 +1,105 @@
+<!-- sadaku -->
+<style>
+    #sadaku{
+        height:900px;
+        width:900px;
+        /* box-shadow: 1px 1px 1px black; */
+
+        
+    }
+
+    .rows{
+        width:100%;
+        height:100px;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+    }
+
+    .cols{
+        width: 100px;
+        height:100%;
+        text-align: center;
+        padding-top:50px;
+    }
+    </style>
+
+
+<html>
+    <div id="sadaku"> </div>
+    </html>
+
+
+<script>
+    
+    let arr = [
+                [0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0],
+    ];
+    
+    add9By9();
+    setSadakuVals();
+
+    function add9By9(){
+        for(let x=0; x<9; x++){
+            let border_bottom ="1px solid black";
+            if((x+1)%3 == 0)
+                    border_bottom = "2px solid black";
+
+            document.getElementById("sadaku").innerHTML += "<div class='rows' id='row"+(x+1)+"' style='border-bottom:"+border_bottom+"'></div>";
+
+            for(let y=0; y<9; y++){
+                let border_right = "1px solid black";
+                if((y+1)%3 == 0)
+                    border_right= "2px solid black";
+
+                document.getElementById("row"+(x+1)).innerHTML += "<div class='cols' style='border-right:"+border_right+"' id='col"+(x*9+(y+1))+"'>"+(x*9+(y+1))+"</div>";
+
+            }
+        }
+    }
+
+    function setSadakuVals(){
+        for(let x=0; x<9; x++){
+            for(let y=0; y<9; y++){
+                
+                let is_x_axis_good;
+                let is_y_axis_good;
+                let temp_val_for_xy_cell;
+                do{
+                    is_x_axis_good = true;
+                    is_y_axis_good = true;
+                     temp_val_for_xy_cell = Math.floor(Math.random() * 9)+1;
+                    console.log(temp_val_for_xy_cell);
+                // while(arr[x].includes(temp_val_for_xy_cell)){
+                //     is_x_axis_good = false;
+                // }
+
+                    for(let z=0; z<9; z++){//find vertically if duplicates
+                        if(arr[z][y] == temp_val_for_xy_cell && x!=z){
+                            is_y_axis_good = false;
+                            break;
+                        }
+
+                        // if(arr[x][z] == temp_val_for_xy_cell && z!=y){
+                        //     is_x_axis_good = false;
+                        //     break;
+                        // }
+                    }
+                }while(is_x_axis_good == false || is_y_axis_good == false);
+
+                arr[x][y] = temp_val_for_xy_cell;
+                document.getElementById("col"+(x*9+(y+1))).innerHTML = arr[x][y];
+            }
+        }
+
+        console.log(arr);
+    }
+</script>

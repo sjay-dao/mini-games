@@ -1,0 +1,12 @@
+{
+    data:{
+    sample:{
+        username:'sjay04',
+        password: '1234654323'
+    },
+    sample2:{
+        username:'sjay04',
+        password: '1234654323'
+    }
+    }
+    }
